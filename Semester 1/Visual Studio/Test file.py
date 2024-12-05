@@ -31,14 +31,15 @@ for row in rows:
 df = pd.DataFrame(data)
 df.to_csv('companies', index=False)
 
-companies = pd.read_csv('companies')
+data = pd.read_csv('companies')
 
-sns.histplot(df, kde=True)
+data['Revenue (Millions)'] = data['Revenue (Millions)'].str.replace('[$,]', '', regex=True).astype(int)
+data['Employees'] = data['Employees'].str.replace('[$,]', '', regex=True).astype(int)
+
+data.info()
+
+sns.scatterplot(data=data, x='Revenue (Millions)', y='Employees')
 plt.show()
-
-
-
-
 '''
 print(dataFrame)
 dataFrame.info()
