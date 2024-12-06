@@ -17,10 +17,10 @@ dataFrame = newFile[0]
 rows = table.find_all('tr')
 data = []
 for row in rows:
-    cells = row.find_all('td')  # Find all cells in the row
-    if cells:  # Skip empty rows
+    cells = row.find_all('td') 
+    if cells: 
         data.append({
-            'Name': cells[0].text.strip(),  # Replace with column names
+            'Name': cells[0].text.strip(), 
             'Sector': cells[1].text.strip(),
             'Revenue (Millions)': cells[2].text.strip(),
             'Profit (Millions)': cells[3].text.strip(),
@@ -35,32 +35,33 @@ data = pd.read_csv('companies')
 
 data['Revenue (Millions)'] = data['Revenue (Millions)'].str.replace('[$,]', '', regex=True).astype(int)
 data['Employees'] = data['Employees'].str.replace('[$,]', '', regex=True).astype(int)
+data['Profit (Millions)'] = data['Profit (Millions)'].str.replace('[$,]', '', regex=True).astype(int)
 
 data.info()
 
 sns.scatterplot(data=data, x='Revenue (Millions)', y='Employees')
 plt.show()
-'''
+
 print(dataFrame)
-dataFrame.info()
+data.info()
 
 
-mania = ["Ram", "Employees"]
-nDataFrame = dataFrame[mania]
-print(nDataFrame)
+mania = ["Name", "Employees"]
+nData = data[mania]
+###print(nData)
 
 emp = ["Employees"]
-employees = dataFrame["Employees"]
+employees = data["Employees"]
 
 
 def findQuantile(money):
-    quantile = dataFrame[money].quantile(.5)
+    quantile = data[money].quantile(.5)
     print(f"The Median Value of the {money} column is {quantile}")
 
 ##findQuantile(emp)
 
 def findAverage(money):
-    average = dataFrame[money].mean()
+    average = data[money].mean()
     print(f"The Average Value of the {money} column is {average}")
 
 ##findAverage(emp)
@@ -68,4 +69,24 @@ def findAverage(money):
 ##sns.histplot(employees, kde=True, color='red')
 ###plt.show()
 
-'''
+###findAverage("Employees")
+###findAverage("Revenue (Millions)")
+
+def revenuePerEmployee(company):
+    if company in data['Name'].values:
+        company_data = data[data['Name'] == company]
+        ###print(company_data["Revenue (Millions)"])
+        ###print(company_data["Employees"])
+        revenue = (company_data["Revenue (Millions)"] * 1000000) / company_data["Employees"]
+        print(f"The expected revenue generated per employee for {company} is {revenue} million.")
+    else:
+        print(f"Couldn't generate information for {company}.")
+
+revenuePerEmployee("Walmart")
+revenuePerEmployee("Amazon")
+revenuePerEmployee("Saudi Aramco")
+
+q = data["Revenue (Millions)"].mean()
+a = data["Employees"].mean()
+true = (q * 1000000) / a    
+print(f"The Expected Revenue generated per employee of all companies listed is {true}")
